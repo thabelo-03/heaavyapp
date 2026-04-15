@@ -1,0 +1,165 @@
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Switch, TextInput, TouchableOpacity, View } from 'react-native';
+
+import { ThemedText } from '../../components/themed-text';
+import { ThemedView } from '../../components/themed-view';
+import { useThemeColor } from '../../hooks/use-theme-color';
+import { API_BASE_URL } from '../config';
+
+export default function ProfileSettingsScreen() {
+  const router = useRouter();
+  const textColor = useThemeColor({}, 'text');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('biometricEnabled').then((value) => {
+      setBiometricEnabled(value === 'true');
+    });
+    AsyncStorage.getItem('userRole').then(setUserRole);
+  }, []);
+
+  const toggleBiometric = async (value: boolean) => {
+    setBiometricEnabled(value);
+    await AsyncStorage.setItem('biometricEnabled', value.toString());
+  };
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Error', 'New passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Password changed successfully');
+        router.back();
+      } else {
+        Alert.alert('Error', data.message || 'Failed to change password');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Could not connect to server');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ThemedView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color={textColor} />
+        </TouchableOpacity>
+        <ThemedText type="title">Profile Settings</ThemedText>
+      </View>
+
+      {userRole === 'manager' && (
+        <TouchableOpacity 
+          style={[styles.saveButton, { backgroundColor: '#0f172a', marginBottom: 20, marginTop: 0 }]} 
+          onPress={() => router.replace('/(manager)')}
+        >
+          <ThemedText style={styles.saveButtonText}>Switch to Manager Dashboard</ThemedText>
+        </TouchableOpacity>
+      )}
+
+      <View style={styles.form}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Security</ThemedText>
+        <View style={styles.switchRow}>
+          <View>
+            <ThemedText style={styles.label}>Biometric Approval</ThemedText>
+            <ThemedText style={styles.subLabel}>Use Fingerprint/FaceID for manager overrides</ThemedText>
+          </View>
+          <Switch value={biometricEnabled} onValueChange={toggleBiometric} trackColor={{ false: '#767577', true: '#1e40af' }} thumbColor={biometricEnabled ? '#fff' : '#f4f3f4'} />
+        </View>
+
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Change Password</ThemedText>
+        
+        <View style={styles.inputGroup}>
+          <ThemedText style={styles.label}>Current Password</ThemedText>
+          <TextInput
+            style={[styles.input, { color: textColor, borderColor: textColor }]}
+            secureTextEntry
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            placeholder="Enter current password"
+            placeholderTextColor="#888"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <ThemedText style={styles.label}>New Password</ThemedText>
+          <TextInput
+            style={[styles.input, { color: textColor, borderColor: textColor }]}
+            secureTextEntry
+            value={newPassword}
+            onChangeText={setNewPassword}
+            placeholder="Enter new password"
+            placeholderTextColor="#888"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <ThemedText style={styles.label}>Confirm New Password</ThemedText>
+          <TextInput
+            style={[styles.input, { color: textColor, borderColor: textColor }]}
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm new password"
+            placeholderTextColor="#888"
+          />
+        </View>
+
+        <TouchableOpacity 
+          style={styles.saveButton} 
+          onPress={handleChangePassword}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <ThemedText style={styles.saveButtonText}>Update Password</ThemedText>
+          )}
+        </TouchableOpacity>
+      </View>
+      </ScrollView>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 30, gap: 15 },
+  backButton: { padding: 5 },
+  form: { gap: 20 },
+  sectionTitle: { marginBottom: 10 },
+  inputGroup: { gap: 8 },
+  label: { fontSize: 14, fontWeight: '600', opacity: 0.8 },
+  input: { borderWidth: 1, borderRadius: 8, padding: 12, fontSize: 16, opacity: 0.8 },
+  saveButton: { backgroundColor: '#1e40af', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 10 },
+  saveButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#e2e8f0', marginBottom: 10 },
+  subLabel: { fontSize: 12, color: '#64748b', marginTop: 2 },
+});
