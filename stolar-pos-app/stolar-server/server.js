@@ -154,9 +154,8 @@ app.post('/api/auth/login', async (req, res) => {
 
     // Check Subscription Status
     const now = new Date();
-    const expiry = user.subscriptionExpiry ? new Date(user.subscriptionExpiry) : new Date();
-    // If expiry is in the past, they are expired
-    const isExpired = expiry < now;
+    // Subscriptions removed for single-company app
+    const isExpired = false;
 
     const shopCount = await Shop.countDocuments({ manager: user._id });
 
@@ -322,16 +321,6 @@ app.post('/api/shops/register', async (req, res) => {
   console.log('Registering shop:', req.body.name);
   try {
     const { name, location, managerId, confirmPremium } = req.body;
-
-    // Premium Plan Check: Warn before adding 2nd shop
-    const existingShops = await Shop.countDocuments({ manager: managerId });
-    if (existingShops >= 1 && !confirmPremium) {
-      return res.status(409).json({ 
-        success: false,
-        requiresConfirmation: true,
-        message: "Adding a second shop upgrades your subscription to the Premium Plan (R400/month). Do you want to proceed?"
-      });
-    }
 
     const generatedCode = `BATT-${Math.floor(1000 + Math.random() * 9000)}`;
 

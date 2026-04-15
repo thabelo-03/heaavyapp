@@ -110,7 +110,7 @@ export default function Signup() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <View style={styles.logoBox}>
-          <Image source={require('../../assets/images/stolar-logo.jpeg')} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
+          <Image source={require('../../assets/images/heavylogo.jpeg')} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
         </View>
         <Text style={styles.title}>Heavy POS</Text>
         <Text style={styles.subtitle}>Create Rural Staff Account</Text>

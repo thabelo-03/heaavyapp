@@ -4,7 +4,7 @@
     "slug": "atolar-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/stolar-logo.jpeg",
+    "icon": "./assets/images/heavylogo.jpeg",
     "scheme": "atolarapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,7 +15,7 @@
       "package": "com.stolar.pos",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/images/stolar-logo.jpeg"
+        "foregroundImage": "./assets/images/heavylogo.jpeg"
       },
       "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,

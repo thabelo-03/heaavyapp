@@ -131,7 +131,7 @@ export default function LoginScreen() {
       
       <View style={styles.logoContainer}>
         <View style={styles.iconCircle}>
-          <Image source={require('../assets/images/stolar-logo.jpeg')} style={{ width: '100%', height: '100%', borderRadius: 90, resizeMode: 'cover' }} />
+          <Image source={require('../assets/images/heavylogo.jpeg')} style={{ width: '100%', height: '100%', borderRadius: 90, resizeMode: 'cover' }} />
         </View>
         <Text style={styles.tagline}>Smart Management & Sales Tracking</Text>
       </View>

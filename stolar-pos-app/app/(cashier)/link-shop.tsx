@@ -89,7 +89,7 @@ export default function LinkShopScreen() {
     >
       <View style={styles.card}>
         <View style={styles.iconContainer}>
-          <Image source={require('../../assets/images/stolar-logo.jpeg')} style={{ width: 60, height: 60, resizeMode: 'contain' }} />
+          <Image source={require('../../assets/images/heavylogo.jpeg')} style={{ width: 60, height: 60, resizeMode: 'contain' }} />
         </View>
         
         <Text style={styles.title}>Join a Shop Branch</Text>
