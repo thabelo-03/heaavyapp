@@ -24,12 +24,12 @@ export default function AddStockScreen() {
   const [price, setPrice] = useState('');
   const [costPrice, setCostPrice] = useState('');
   const [loading, setLoading] = useState(false);
+  const [warranty, setWarranty] = useState(''); // New state for warranty
   const [permission, requestPermission] = useCameraPermissions();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeScanField, setActiveScanField] = useState<'name' | 'barcode' | null>(null);
-  // Add this near your other useState hooks
-const [category, setCategory] = useState('General');
-  const [existingCategories, setExistingCategories] = useState<string[]>(['Groceries', 'Beverages', 'Snacks', 'Household', 'Personal Care']);
+  const [category, setCategory] = useState('Car Battery'); // Default to a battery category
+  const [existingCategories, setExistingCategories] = useState<string[]>(['Car Battery', 'Solar Battery', 'Motorcycle Battery', 'AGM', 'Lithium', 'Deep Cycle']);
   const itemNameInputRef = useRef<TextInput>(null);
   const cameraRef = useRef<CameraView>(null);
   
@@ -48,13 +48,15 @@ const [category, setCategory] = useState('General');
       setPrice(params.price ? Number(params.price).toFixed(2) : '');
       setCostPrice(params.costPrice ? Number(params.costPrice).toFixed(2) : '');
       if (params.category) setCategory(params.category as string);
+      if (params.warranty) setWarranty(params.warranty as string);
     } else {
       setItemName('');
       setBarcode('');
       setQuantity('');
       setPrice('');
       setCostPrice('');
-      setCategory('General');
+      setWarranty('');
+      setCategory('Car Battery');
     }
     setHasUnsavedChanges(false);
   }, [params.mode, params.id, params.name, params.quantity, params.barcode, params.price, params.costPrice, params.category]);
@@ -136,16 +138,8 @@ const [category, setCategory] = useState('General');
       return;
     }
 
-    // Validate that Item Name ends with a weight (e.g., 1kg, 500g)
-    if (!/[0-9]+(\.[0-9]+)?\s*(kg|g|l|ml)$/i.test(itemName.trim())) {
-      Alert.alert('Invalid Name', 'Item name must include weight/volume at the end (e.g. "Rice 2kg", "Milk 1L")');
-      return;
-    }
-
-    // Normalize name: Capitalize unit and remove space between number and unit
-    const finalName = itemName.trim().replace(/([0-9]+(\.[0-9]+)?)\s*(kg|g|l|ml)$/i, (match, num, decimal, unit) => {
-      return `${num}${unit.toUpperCase()}`;
-    });
+    // For batteries, we just trim the name.
+    const finalName = itemName.trim();
 
     let numPrice = Number(price);
     let numCost = Number(costPrice);
@@ -195,7 +189,7 @@ const [category, setCategory] = useState('General');
         const response = await fetch(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: finalName, quantity: Number(quantity), barcode, price: numPrice, costPrice: numCost, category: category, shopId, userId }),
+          body: JSON.stringify({ name: finalName, quantity: Number(quantity), barcode, price: numPrice, costPrice: numCost, category: category, warranty, shopId, userId }),
         });
 
         const data = await response.json();
@@ -216,7 +210,8 @@ const [category, setCategory] = useState('General');
                 setQuantity('');
                 setPrice('');
                 setCostPrice('');
-                setCategory('General');
+                setWarranty('');
+                setCategory('Car Battery');
                 itemNameInputRef.current?.focus();
               }}]);
             } else {
@@ -335,7 +330,7 @@ const [category, setCategory] = useState('General');
                         style={styles.input}
                         value={itemName}
                         onChangeText={(text) => { setItemName(text); setHasUnsavedChanges(true); }}
-                        placeholder="e.g. Apple 1kg"
+                        placeholder="e.g. Exide 12V 100Ah Battery"
                         placeholderTextColor={placeholderColor}
                     />
                     <TouchableOpacity onPress={async () => {
@@ -349,7 +344,7 @@ const [category, setCategory] = useState('General');
                         <Ionicons name="scan-outline" size={20} color="#1e40af" />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.helperText}>Must include weight/volume (e.g. 1kg, 1L)</Text>
+                <Text style={styles.helperText}>Enter the full battery name and model.</Text>
             </View>
 
             <View style={styles.inputGroup}>
@@ -360,7 +355,7 @@ const [category, setCategory] = useState('General');
                         style={styles.input}
                         value={category}
                         onChangeText={(text) => { setCategory(text); setHasUnsavedChanges(true); }}
-                        placeholder="e.g. Groceries"
+                        placeholder="e.g. Solar Battery"
                         placeholderTextColor={placeholderColor}
                     />
                 </View>
@@ -399,6 +394,20 @@ const [category, setCategory] = useState('General');
                     }} style={styles.scanIconBtn}>
                         <Ionicons name="camera-outline" size={20} color="#1e40af" />
                     </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Warranty Period</Text>
+                <View style={styles.inputWrapper}>
+                    <Ionicons name="shield-checkmark-outline" size={20} color="#64748b" style={styles.inputIcon} />
+                    <TextInput 
+                        style={styles.input}
+                        value={warranty}
+                        onChangeText={(text) => { setWarranty(text); setHasUnsavedChanges(true); }}
+                        placeholder="e.g. 12 Months, 2 Years"
+                        placeholderTextColor={placeholderColor}
+                    />
                 </View>
             </View>
         </View>

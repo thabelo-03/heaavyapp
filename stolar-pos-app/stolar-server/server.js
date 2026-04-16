@@ -1,5 +1,3 @@
- const dns = require('node:dns');
-dns.setServers(['8.8.8.8', '8.8.4.4']); //
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -469,7 +467,7 @@ app.post('/api/products/:id/restore', async (req, res) => {
 
 app.post('/api/products/add', async (req, res) => {
   console.log('Adding/Updating product:', req.body.name, req.body.barcode);
-  const { name, barcode, category, price, costPrice, quantity, shopId, userId } = req.body; 
+  const { name, barcode, category, price, costPrice, quantity, warranty, shopId, userId } = req.body; 
   try {
     // Check for product in THIS specific shop
     let query = { barcode };
@@ -514,7 +512,7 @@ app.post('/api/products/add', async (req, res) => {
     } else {
       const newProduct = new Product({ 
         name, barcode, category, price: Number(price) || 0, 
-        costPrice: Number(costPrice) || 0, stockQuantity: addQty, shopId
+        costPrice: Number(costPrice) || 0, stockQuantity: addQty, warranty, shopId
       });
       console.log(`[DEBUG] Creating ${name}: Price=${newProduct.price}, Cost=${newProduct.costPrice}`);
       await newProduct.save();
@@ -646,13 +644,14 @@ app.post('/api/products/batch-update', async (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
   console.log(`Updating product ${req.params.id}:`, req.body);
   try {
-    const { name, barcode, category, price, costPrice, quantity, shopId, userId } = req.body;
+    const { name, barcode, category, price, costPrice, quantity, warranty, shopId, userId } = req.body;
     
     const updateData = {
       name,
       barcode,
       category,
       price: Number(price),
+      warranty,
       costPrice: Number(costPrice),
       stockQuantity: Number(quantity)
     };

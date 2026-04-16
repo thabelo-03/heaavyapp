@@ -141,7 +141,7 @@ export default function Login() {
     >
       <View style={styles.headerSection}>
         <View style={styles.iconCircle}>
-          <Image source={require('../../assets/images/stolar-logo.jpeg')} style={{ width: '100%', height: '100%', borderRadius: 80, resizeMode: 'cover' }} />
+          <Image source={require('../../assets/images/heavylogo.jpeg')} style={{ width: '100%', height: '100%', borderRadius: 80, resizeMode: 'cover' }} />
         </View>
         <Text style={styles.subtitle}>Management & Retail System</Text>
       </View>

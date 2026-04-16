@@ -476,38 +476,6 @@ export default function MyShopScreen() {
             </View>
         </View>
       </Modal>
-
-      {/* MANAGER SHOP SELECTION MODAL */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={shopSelectionVisible}
-        onRequestClose={() => setShopSelectionVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Select Shop</Text>
-                <Text style={{textAlign: 'center', color: '#64748b', marginBottom: 20}}>Choose a shop to manage.</Text>
-                
-                <FlatList
-                    data={shops}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.shopSelectionItem} onPress={() => handleSelectShop(item)}>
-                            <Ionicons name="storefront" size={20} color="#1e40af" style={{marginRight: 10}} />
-                            <Text style={styles.shopSelectionText}>{item.name}</Text>
-                            <Ionicons name="chevron-forward" size={20} color="#cbd5e1" style={{marginLeft: 'auto'}} />
-                        </TouchableOpacity>
-                    )}
-                    style={{maxHeight: 300, width: '100%'}}
-                />
-
-                <TouchableOpacity style={[styles.modalBtn, styles.cancelBtn, {marginTop: 15, width: '100%'}]} onPress={() => setShopSelectionVisible(false)}>
-                    <Text style={styles.cancelBtnText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-      </Modal>
     </View>
   );
 }

@@ -46,7 +46,7 @@ export default function ForgotPassword() {
 
       <View style={styles.header}>
         <View style={styles.iconCircle}>
-          <Image source={require('../../assets/images/stolar-logo.jpeg')} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
+          <Image source={require('../../assets/images/heavylogo.jpeg')} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
         </View>
         <Text style={styles.title}>Forgot Password?</Text>
         <Text style={styles.subtitle}>Enter your email to reset your password</Text>
