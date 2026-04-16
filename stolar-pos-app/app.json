@@ -1,18 +1,19 @@
 {
   "expo": {
-    "name": "atolar-app",
-    "slug": "atolar-app",
+    "name": "HeavyApp POS",
+    "slug": "heavyapp-pos",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/heavylogo.jpeg",
-    "scheme": "atolarapp",
+    "scheme": "heavyapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.heavyapp.pos"
     },
     "android": {
-      "package": "com.stolar.pos",
+      "package": "com.heavyapp.pos",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
         "foregroundImage": "./assets/images/heavylogo.jpeg"
@@ -48,8 +49,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Stolar POS to access your camera to scan barcodes.",
-          "microphonePermission": "Allow Stolar POS to access your microphone."
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan barcodes.",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ]
     ],
@@ -59,9 +60,7 @@
     },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "39b54565-9cda-4ee8-8b6d-767b529c9974"
-      }
+      "eas": {}
     },
     "runtimeVersion": {
       "policy": "appVersion"
